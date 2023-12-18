@@ -28,6 +28,9 @@ mod tests {
         let result = 4.0;
         // offset 12k, length 8k
         assert_eq!(calculate_waf(3, 2, 4), result);
+        let result = 1.6;
+        // offset 12k, length 20k
+        assert_eq!(calculate_waf(3, 5, 4), result);
         let result = 1.33;
         // offset 4k, length 12k
         assert_relative_eq!(calculate_waf(1, 3, 4), result, max_relative = 0.01);
@@ -53,5 +56,19 @@ mod tests {
         // offset 8k, length 32k
         assert_relative_eq!(calculate_waf(2, 8, 4), result, max_relative = 0.000001);
         let result = 1.5;
+    }
+
+    #[test]
+    fn worst_case_waf() {
+        let iu = 4; // 16k
+        for i in 1..129 {
+            let mut waf_worst: f64 = 1.00;
+
+            for o in 0..(iu) {
+                waf_worst = waf_worst.max(calculate_waf(o, i, iu));
+            }
+
+            println!("Len: {}k WAF: {}", i*4, waf_worst);
+        }
     }
 }
